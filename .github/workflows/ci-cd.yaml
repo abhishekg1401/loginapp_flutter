@@ -68,6 +68,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Build app for production
+        run: flutter build apk --release
+        
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
@@ -83,3 +86,38 @@ jobs:
           groups: 'testers'
           file: build/app/outputs/flutter-apk/app-release.apk
           releaseNotes: 'Automated staging build'
+
+
+  deploy_production:
+    needs: build_android
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+        # Add steps for building your Flutter app, running tests, etc.
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+        
+      - name: Install dependencies
+        run: flutter pub get
+        
+ #     - name: Run integration tests
+ #       run: flutter test integration_test/
+        
+      - name: Build app for production
+        run: flutter build apk --release
+        
+    # Add a step to deploy to Firebase App Distribution for production
+      - name: Deploy to Firebase App Distribution (Production)
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: 'testers' # Customize as needed
+          file: build/app/outputs/flutter-apk/app-release.apk
+          releaseNotes: 'Automated production build'
