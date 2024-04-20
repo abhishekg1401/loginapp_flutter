@@ -68,9 +68,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Build app for production
-        run: flutter build apk --release
-        
+#   - name: Build app for production
+#        run: flutter build apk --release
+
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
