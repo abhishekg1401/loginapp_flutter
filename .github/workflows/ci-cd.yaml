@@ -98,6 +98,7 @@ jobs:
         
         with:
           appId: ${{ secrets.FIREBASE_APP_ID_STAGING }}
+          #token: ${{secrets.FIREBASE_TOKEN}}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_TOKEN_STAGING }}
           groups: 'testers'
           file: build/app/outputs/flutter-apk/app-release.apk
