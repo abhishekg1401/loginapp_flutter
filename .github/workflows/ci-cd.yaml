@@ -32,8 +32,8 @@ jobs:
       - name: Run lint checks
         run: flutter analyze
 
- #     - name: Run unit and widget tests
- #       run: flutter test --coverage
+      - name: Run unit and widget tests
+        run: flutter test --coverage
 
   build_android:
     needs: build_and_test
@@ -52,6 +52,7 @@ jobs:
         run: flutter build apk --release
 
       - name: Upload artifact
+        if: success()
         uses: actions/upload-artifact@v2
         with:
           name: app-release.apk
@@ -69,6 +70,7 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
 
       - name: Deploy to Firebase App Distribution (Staging)
+        if: success()
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID_STAGING }}
