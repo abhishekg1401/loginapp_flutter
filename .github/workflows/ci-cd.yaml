@@ -10,7 +10,6 @@ on:
 
 env:
   FIREBASE_TOKEN_STAGING: ${{ secrets.FIREBASE_TOKEN_STAGING }}
-  FIREBASE_TOKEN_PRODUCTION: ${{ secrets.FIREBASE_TOKEN_PRODUCTION }}
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
@@ -63,7 +62,7 @@ jobs:
           name: app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-  deploy_to_firebase:
+  deploy_to_firebase_staging:
     needs: build_android
     runs-on: ubuntu-latest
 
@@ -79,18 +78,9 @@ jobs:
         
       - name: Install dependencies
         run: flutter pub get
-        
- #     - name: Run integration tests
- #       run: flutter test integration_test/
-        
+
       - name: Build app for staging
         run: flutter build apk --release
-
-#      - name: Download artifact
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: app-release.apk
-#          path: build/app/outputs/flutter-apk/app-release.apk
 
       - name: Deploy to Firebase App Distribution (Staging)
         if: success()
